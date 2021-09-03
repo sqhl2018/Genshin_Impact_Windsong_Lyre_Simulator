@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="10"
+   height="10"
+   viewBox="0 0 2.6458333 2.6458333"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="cs_down.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="18.245667"
+     inkscape:cx="20.032153"
+     inkscape:cy="21.511957"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5"
+     units="px"
+     width="37.79528px" />
+  <defs
+     id="defs2">
+    <color-profile
+       name="Agfa-:-Swop-Standard"
+       xlink:href="../../../../WINDOWS/system32/spool/drivers/color/RSWOP.icm"
+       id="color-profile904" />
+  </defs>
+  <g
+     id="layer1"
+     transform="matrix(0.03801561,0,0,0.03801561,-0.10478573,-0.17027703)"
+     style="fill:#8beeef;fill-opacity:1">
+    <circle
+       style="fill:#8beeef;fill-opacity:1;stroke-width:0.211667;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       id="path846"
+       cx="37.555691"
+       cy="39.278439"
+       r="34.799305" />
+  </g>
+</svg>
