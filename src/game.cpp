@@ -2,12 +2,10 @@
 #include"res.h"
 #include<stdint.h>
 #include <thread>
-#define GPP_COMPILE
 //以下是防止按键变成输入法打字,接收不到按键信息
-#ifdef GPP_COMPILE
+#ifdef IMM_COMPILE
 #include<windows.h>
 #include<imm.h>
-#pragma comment (lib ,"imm32.lib")
 #endif
 Game::Game() {
 /******************************加载资源文件********************************************/
@@ -81,7 +79,7 @@ Game::Game() {
     window=new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight),"Genshin Impact.WindSong Lyre",sf::Style::Close);
     window->setKeyRepeatEnabled(false);//禁止重复按键
     //防止卡输入法
-    #ifdef GPP_COMPILE
+    #ifdef IMM_COMPILE
     sf::WindowHandle handle=window->getSystemHandle();
     HIMC g_hIMC = NULL;//g_hIMC 用于恢复时使用
     g_hIMC = ImmAssociateContext(handle, NULL);//handle 为要禁用的窗口句柄
