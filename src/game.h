@@ -33,15 +33,17 @@ class Game {
         void render();//渲染窗口
         sf::RenderWindow* window;//程序的主窗口
         sf::Sprite* bgSprite;//背景图
-        sf::Sprite *gSprite;//三个音符(高、中、低)
-        sf::Vector2f* gPosition=new sf::Vector2f(80.f,150.f);//三个音符的位置
-        sf::Sprite* cs;//按键背景图
-        sf::Sprite* cs_down;//按下时的按键背景图
-        sf::Sprite* huan;//按键上的圆环
-        sf::Sprite* do_note;//按键上的音符
+        sf::Sprite* clefSprite;
+        sf::Sprite* clefTensorSprite;
+        sf::Sprite* clefBaseSprite;
+        double clefX=150.f;
+        sf::Vector2f* clefPosition=new sf::Vector2f(clefX,168.f);//三个音符的位置
+        sf::Vector2f* clefTensorPosition=new sf::Vector2f(clefX,310.f);
+        sf::Vector2f* clefBasePosition=new sf::Vector2f(clefX,450.f);
+        std::map<std::string,sf::Sprite*>upMap;
+        std::map<std::string,sf::Sprite*>downMap;
         int windowWidth=1536;//窗口大小
         int windowHeight=700;
-        sf::Font* font;//按键上文本的字体
         int buttonSize=100;//按键的尺寸
         //21个键值
         std::array<std::string,21>keys={"Q","W","E","R","T","Y","U","A","S","D","F","G","H","J","Z","X","C","V","B","N","M"};
@@ -56,8 +58,6 @@ class Game {
         std::map<std::string, sf::SoundBuffer*>keySoundMap;
         //键值与位置的对应关系，就是21个按钮的位置
         std::map<std::string,sf::Vector2f>positionMap;
-        //键值与对应图片的映射
-        std::map<std::string,sf::Sprite*>spriteMap;
         //键值与按键状态的映射
         std::map<std::string,int>stateMap;
         //播放音效

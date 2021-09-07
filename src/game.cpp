@@ -8,57 +8,62 @@
 #include<imm.h>
 #endif
 Game::Game() {
-/******************************加载资源文件********************************************/
-    //字体
-    font=new sf::Font;
-    if (!font->loadFromMemory(res_ft_ttf,res_ft_ttf_size)){std::cout<<"an exception occured when load font"<<std::endl;}
-    //背景图
+/******************************加载资源文件,load resource files********************************************/
+    //背景图,load background image
     sf::Texture* texture=new sf::Texture;
+    //texture->loadFromFile("./res/png/bg.png");
     if(texture->loadFromMemory(res_bg_png,res_bg_png_size)){
        bgSprite=new sf::Sprite(*texture);
        bgSprite->setTextureRect(sf::IntRect(0, 30, windowWidth,windowHeight));
     }
     //三个音符
     texture=new sf::Texture;
-    if(texture->loadFromMemory(res_g_png,res_g_png_size)){
-        gSprite=new sf::Sprite(*texture);
-        gSprite->setPosition(*gPosition);
+    if(texture->loadFromMemory(res_clef_png,res_clef_png_size)){
+        clefSprite=new sf::Sprite(*texture);
+        clefSprite->setPosition(*clefPosition);
     }
-    //按键背景图
-    texture=new sf::Texture;
-    if(texture->loadFromMemory(res_cs_png,res_cs_png_size)){
-        cs=new sf::Sprite(*texture);
-        cs->setPosition(sf::Vector2f(0.0f,0.0f));
+     texture=new sf::Texture;
+    if(texture->loadFromMemory(res_clef_tensor_png,res_clef_tensor_png_size)){
+        clefTensorSprite=new sf::Sprite(*texture);
+        clefTensorSprite->setPosition(*clefTensorPosition);
     }
-    texture=new sf::Texture;
-    if(texture->loadFromMemory(res_cs_down_png,res_cs_down_png_size)){
-        cs_down=new sf::Sprite(*texture);
-        cs_down->setPosition(sf::Vector2f(0.0f,10.0f));
+     texture=new sf::Texture;
+    if(texture->loadFromMemory(res_clef_base_png,res_clef_base_png_size)){
+        clefBaseSprite=new sf::Sprite(*texture);
+        clefBaseSprite->setPosition(*clefBasePosition);
     }
-    //按键上的圆环
-    texture=new sf::Texture;
-    if(texture->loadFromMemory(res_h_png,res_h_png_size)){
-        huan=new sf::Sprite(*texture);
-        huan->setPosition(sf::Vector2f(0.0f,20.0f));
-    }
+    
     //一些对应关系
     int hGap=160;int sGap=130;int startX=240;int startY=180;
     for(int i=0;i<21;i++){
+        uint8_t *ptr;
+        uint32_t siz;
         keyNoteMap[keys.at(i)]=notes.at((i%7));//map:Q->do,W->re,E->mi...
         texture=new sf::Texture;
-        //每个按键上画的音符
-        std::string sn;
-        sn.append(keyNoteMap[keys.at(i)]).append("_png");
-        uint8_t* ptr=res.resMap[sn]->p;
-        std::size_t siz=res.resMap[sn]->size;
-        if(texture->loadFromMemory(ptr,siz)){
-            sf::Sprite* note=new sf::Sprite(*texture);
-            spriteMap[keys.at(i)]=note;
-        }
+    
         //每个按键的动画信息
         animationMap[keys.at(i)]=new AnimationInfo(0,frameTime,hGap*(i%7)+startX-50,sGap*(i/7)+startY-50);
         //每个按键的位置
         positionMap[keys[i]]=sf::Vector2f(hGap*(i%7)+startX,sGap*(i/7)+startY);
+        //按键背景图
+        texture=new sf::Texture;
+        std::string s1;
+        s1.append(keyNoteMap[keys.at(i)]).append("_png");
+        ptr=res.resMap[s1]->p;
+        siz=res.resMap[s1]->size;
+        if(texture->loadFromMemory(ptr,siz)){
+            upMap[keys.at(i)]=new sf::Sprite(*texture);
+            upMap[keys.at(i)]->setPosition(positionMap[keys.at(i)]);
+        }
+        texture=new sf::Texture;
+        std::string s2;
+        s2.append(keyNoteMap[keys.at(i)]).append("_down_png");
+        ptr=res.resMap[s2]->p;
+        siz=res.resMap[s2]->size;
+        if(texture->loadFromMemory(ptr,siz)){
+            downMap[keys.at(i)]=new sf::Sprite(*texture);
+            downMap[keys.at(i)]->setPosition(positionMap[keys.at(i)]);
+        }
         //每个按键的状态,0x00未按下,0xaa按下
         stateMap[keys[i]]=0x00;
         //每个按键对应的音效
@@ -70,12 +75,12 @@ Game::Game() {
         sound_buffer->loadFromMemory(ptr,siz);
         keySoundMap[keys.at(i)]=sound_buffer;
     }
-    //初始化环形动画
+    //初始化环形动画,donghua is animation
     texture=new sf::Texture;
     if(texture->loadFromMemory(res_donghua_png,res_donghua_png_size)){
         donghua=new sf::Sprite(*texture);
     }
-    //创建主窗口
+    //创建主窗口,show the main window
     window=new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight),"Genshin Impact.WindSong Lyre",sf::Style::Close);
     window->setKeyRepeatEnabled(false);//禁止重复按键
     //防止卡输入法
@@ -86,7 +91,7 @@ Game::Game() {
     #endif
     //加载图标
     auto image = sf::Image{};
-    if (image.loadFromMemory(res_21_png,res_21_png_size)){
+    if (image.loadFromMemory(res_icon_png,res_icon_png_size)){
         window->setIcon(50, 50, image.getPixelsPtr());
     }
 }
@@ -226,29 +231,18 @@ void Game::render() {
     #endif
     window->clear(sf::Color::White);
     window->draw(*bgSprite);
-    window->draw(*gSprite);
+    window->draw(*clefSprite);
+    window->draw(*clefTensorSprite);
+    window->draw(*clefBaseSprite);
     sf::Int32 msec = clock.getElapsedTime().asMilliseconds();
     //把21个按键画出来
     for(int i=0;i<21;i++){
         if(stateMap[keys.at(i)]==0x00){
-            cs->setPosition(positionMap[keys.at(i)]);
-            window->draw(*cs);
+            
+            window->draw(*upMap[keys.at(i)]);
         }else{
-            cs_down->setPosition(positionMap[keys.at(i)]);
-            window->draw(*cs_down);
+            window->draw(*downMap[keys.at(i)]);
         }
-        huan->setPosition(positionMap[keys.at(i)].x+5,positionMap[keys.at(i)].y+5);
-        window->draw(*huan);
-        spriteMap[keys.at(i)]->setPosition(positionMap[keys.at(i)].x+25,positionMap[keys.at(i)].y+28);
-        window->draw(*spriteMap[keys.at(i)]);
-        sf::Text text;
-        text.setFont(*font);
-        text.setString(keyNoteMap[keys.at(i)]);
-        text.setCharacterSize(18);
-        text.setFillColor(sf::Color(164, 166, 120));
-        text.setStyle(sf::Text::Regular);
-        text.setPosition(positionMap[keys.at(i)].x+39,positionMap[keys.at(i)].y+65);
-        window->draw(text);
         AnimationInfo* ani=animationMap[keys.at(i)];
         if(!ani->isOver){
            ani->update(msec);

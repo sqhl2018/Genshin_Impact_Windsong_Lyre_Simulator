@@ -1,4 +1,4 @@
-# Genshin_Impact_Windsong_Lyre_Imitation
+# Genshin_Impact_Windsong_Lyre_Simulator
 
 
 仿制的原神风物之诗琴.An imitation(or call it a simulator) of the genshin impact's windsong lyre.
@@ -6,6 +6,10 @@
 源码亦可见于Gitee.[Gitee repository](https://gitee.com/aal_izz_well/fangzhi_fengwuzhishiqin).Source code is also avaliable on gitee.
 
 Forgive me for my poor english.
+
+#### 下载(Download)
+
+见Release.Download is available,see release.
 
 #### 程序截图
 
