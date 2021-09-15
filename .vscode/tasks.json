@@ -6,7 +6,8 @@
             "label": "make 生成可执行文件",//任务的名称，可以修改，但一定要和launch中的"preLaunchTask"项保持一致
             "command": "make",
             "args": [
-                "qin_static.exe"
+                "-j4",
+                "WindsongLyre.exe"
             ],
             "options": {
                 "cwd": "${workspaceRoot}"

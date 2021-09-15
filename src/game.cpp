@@ -7,6 +7,7 @@
 #include<windows.h>
 #include<imm.h>
 #endif
+
 Game::Game() {
 /******************************加载资源文件,load resource files********************************************/
     //背景图,load background image
@@ -14,7 +15,7 @@ Game::Game() {
     //texture->loadFromFile("./res/png/bg.png");
     if(texture->loadFromMemory(res_bg_png,res_bg_png_size)){
        bgSprite=new sf::Sprite(*texture);
-       bgSprite->setTextureRect(sf::IntRect(0, 30, windowWidth,windowHeight));
+       bgSprite->setTextureRect(sf::IntRect(0, 15, windowWidth,windowHeight));
     }
     //三个音符
     texture=new sf::Texture;
@@ -22,65 +23,56 @@ Game::Game() {
         clefSprite=new sf::Sprite(*texture);
         clefSprite->setPosition(*clefPosition);
     }
-     texture=new sf::Texture;
+    texture=new sf::Texture;
     if(texture->loadFromMemory(res_clef_tensor_png,res_clef_tensor_png_size)){
         clefTensorSprite=new sf::Sprite(*texture);
         clefTensorSprite->setPosition(*clefTensorPosition);
     }
-     texture=new sf::Texture;
+    texture=new sf::Texture;
     if(texture->loadFromMemory(res_clef_base_png,res_clef_base_png_size)){
         clefBaseSprite=new sf::Sprite(*texture);
         clefBaseSprite->setPosition(*clefBasePosition);
     }
     
     //一些对应关系
-    int hGap=160;int sGap=130;int startX=240;int startY=180;
     for(int i=0;i<21;i++){
         uint8_t *ptr;
         uint32_t siz;
         keyNoteMap[keys.at(i)]=notes.at((i%7));//map:Q->do,W->re,E->mi...
-        texture=new sf::Texture;
-    
         //每个按键的动画信息
-        animationMap[keys.at(i)]=new AnimationInfo(0,frameTime,hGap*(i%7)+startX-50,sGap*(i/7)+startY-50);
+        animationMap[keys.at(i)]=new AnimationInfo(0,frameTime,btnHGap*(i%7)+btnStartX-50,btnVGap*(i/7)+btnStartY-50);
         //每个按键的位置
-        positionMap[keys[i]]=sf::Vector2f(hGap*(i%7)+startX,sGap*(i/7)+startY);
+        positionMap[keys[i]]=sf::Vector2f(btnHGap*(i%7)+btnStartX,btnVGap*(i/7)+btnStartY);
         //按键背景图
         texture=new sf::Texture;
         std::string s1;
-        s1.append(keyNoteMap[keys.at(i)]).append("_png");
-        ptr=res.resMap[s1]->p;
-        siz=res.resMap[s1]->size;
+        s1.append(keyNoteMap[keys.at(i)]).append("_png");//do_png,re_png....
+        ptr=res.resMap[s1]->p;//res_do_png....
+        siz=res.resMap[s1]->size;//res_do_png_size...
         if(texture->loadFromMemory(ptr,siz)){
-            upMap[keys.at(i)]=new sf::Sprite(*texture);
-            upMap[keys.at(i)]->setPosition(positionMap[keys.at(i)]);
+            btnUpSpirteMap[keys.at(i)]=new sf::Sprite(*texture);
+            btnUpSpirteMap[keys.at(i)]->setPosition(positionMap[keys.at(i)]);
         }
         texture=new sf::Texture;
-        std::string s2;
-        s2.append(keyNoteMap[keys.at(i)]).append("_down_png");
-        ptr=res.resMap[s2]->p;
-        siz=res.resMap[s2]->size;
+        std::string s2;s2.append(keyNoteMap[keys.at(i)]).append("_down_png");ptr=res.resMap[s2]->p;siz=res.resMap[s2]->size;
         if(texture->loadFromMemory(ptr,siz)){
-            downMap[keys.at(i)]=new sf::Sprite(*texture);
-            downMap[keys.at(i)]->setPosition(positionMap[keys.at(i)]);
+            btnDownSpirteMap[keys.at(i)]=new sf::Sprite(*texture);
+            btnDownSpirteMap[keys.at(i)]->setPosition(positionMap[keys.at(i)]);
         }
         //每个按键的状态,0x00未按下,0xaa按下
         stateMap[keys[i]]=0x00;
         //每个按键对应的音效
         sf::SoundBuffer *sound_buffer=new sf::SoundBuffer;
-        std::string sv;
-        sv.append(keys.at(i)).append("_wav");
-        ptr=res.resMap[sv]->p;
-        siz=res.resMap[sv]->size;
+        std::string s3;s3.append(keys.at(i)).append("_wav");ptr=res.resMap[s3]->p;siz=res.resMap[s3]->size;
         sound_buffer->loadFromMemory(ptr,siz);
         keySoundMap[keys.at(i)]=sound_buffer;
     }
-    //初始化环形动画,donghua is animation
+    //初始化环形动画,"donghua" is animation
     texture=new sf::Texture;
     if(texture->loadFromMemory(res_donghua_png,res_donghua_png_size)){
         donghua=new sf::Sprite(*texture);
     }
-    //创建主窗口,show the main window
+    //创建主窗口,create the main window
     window=new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight),"Genshin Impact.WindSong Lyre",sf::Style::Close);
     window->setKeyRepeatEnabled(false);//禁止重复按键
     //防止卡输入法
@@ -89,11 +81,12 @@ Game::Game() {
     HIMC g_hIMC = NULL;//g_hIMC 用于恢复时使用
     g_hIMC = ImmAssociateContext(handle, NULL);//handle 为要禁用的窗口句柄
     #endif
-    //加载图标
+    //加载图标.load the icon.
     auto image = sf::Image{};
     if (image.loadFromMemory(res_icon_png,res_icon_png_size)){
         window->setIcon(50, 50, image.getPixelsPtr());
     }
+    
 }
 void Game::run(int frame_per_seconds) {
     sf::Clock clock;
@@ -118,11 +111,43 @@ void Game::run(int frame_per_seconds) {
         }
     }
 }
+Game::~Game(){
+    //TODO:与Spirte绑定的Texture需不需要释放内存？
+    delete window;
+    delete bgSprite;
+    delete clefSprite;
+    delete clefTensorSprite;
+    delete clefBaseSprite;
+    delete clefPosition;
+    delete clefTensorPosition;
+    delete clefBasePosition;
+    delete donghua;
+    for(int i=0;i<maxSoundNum;i++){
+        if(soundArray.at(i)!=nullptr){
+            delete soundArray.at(i);
+            soundArray.at(i)=nullptr;
+        }
+    }
+    for(int i=0;i<21;i++){       
+        delete btnUpSpirteMap[keys.at(i)];
+        delete btnDownSpirteMap[keys.at(i)];
+        delete keySoundMap[keys.at(i)];   
+        delete animationMap[keys.at(i)]; 
+    }      
+}
 
 void Game::onKeyPressed(std::string key){
     stateMap[key]=0x11;
     animationMap[key]->restart(clock.getElapsedTime().asMilliseconds());
     play(key);
+#ifdef SHUCCHU_ZIFU
+    std::cout<<key.c_str();
+    index++;
+    if(index==15){
+        std::cout<<std::endl;
+        index=0;
+    }
+#endif
 }
 void Game::onKeyReleased(std::string key){
     stateMap[key]=0x00;
@@ -181,31 +206,29 @@ void Game::processEvents() {
                 case sf::Keyboard::N:onKeyReleased("N");break;
                 case sf::Keyboard::M:onKeyReleased("M");break;
             }
-    }else if(event.type==sf::Event::MouseButtonPressed){
+        }else if(event.type==sf::Event::MouseButtonPressed){
             int x=event.mouseButton.x;
             int y=event.mouseButton.y;
             for(int i=0;i<21;i++){
-                if((x-(positionMap[keys.at(i)].x+buttonSize/2))*(x-(positionMap[keys.at(i)].x+buttonSize/2))+(y-(positionMap[keys.at(i)].y+buttonSize/2))*(y-(positionMap[keys.at(i)].y+buttonSize/2))<(buttonSize/2)*(buttonSize/2)){
+                if((x-(positionMap[keys.at(i)].x+btnSize/2))*(x-(positionMap[keys.at(i)].x+btnSize/2))+(y-(positionMap[keys.at(i)].y+btnSize/2))*(y-(positionMap[keys.at(i)].y+btnSize/2))<(btnSize/2)*(btnSize/2)){
                     onKeyPressed(keys.at(i));
                     break;
                 }
-            }
-        }
-        if(event.type==sf::Event::MouseButtonReleased){
-            for(int i=0;i<21;i++){
-                onKeyReleased(keys.at(i));
-            }
+            }  
+        }else if(event.type==sf::Event::MouseButtonReleased){
+                for(int i=0;i<21;i++){
+                    onKeyReleased(keys.at(i));
+                }
         }
     }
 }
 void Game::update(sf::Time deltaTime){
-
 }
 
 void Game::play(std::string key){
     if(soundArray.at(cSoundP)!=nullptr){delete soundArray.at(cSoundP);}
     sf::Sound *sound=new sf::Sound;
-    sound->setVolume(80);
+    sound->setVolume(60);
     sound->setBuffer(*keySoundMap[key]);
     sound->play();
     soundArray[cSoundP]=sound;
@@ -239,9 +262,9 @@ void Game::render() {
     for(int i=0;i<21;i++){
         if(stateMap[keys.at(i)]==0x00){
             
-            window->draw(*upMap[keys.at(i)]);
+            window->draw(*btnUpSpirteMap[keys.at(i)]);
         }else{
-            window->draw(*downMap[keys.at(i)]);
+            window->draw(*btnDownSpirteMap[keys.at(i)]);
         }
         AnimationInfo* ani=animationMap[keys.at(i)];
         if(!ani->isOver){

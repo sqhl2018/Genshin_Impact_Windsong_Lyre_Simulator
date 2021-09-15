@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 135.46667 135.46667"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="1.1904806"
+     inkscape:cx="522.05807"
+     inkscape:cy="342.29873"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient16526"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop16524" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient16502"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop16500" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient16462"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#008080;stop-opacity:1;"
+         offset="0"
+         id="stop16460" />
+    </linearGradient>
+    <rect
+       x="127.67953"
+       y="168.83937"
+       width="177.23934"
+       height="94.919648"
+       id="rect2414" />
+    <rect
+       x="162.11941"
+       y="186.47932"
+       width="217.5592"
+       height="159.59941"
+       id="rect2049" />
+  </defs>
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill-opacity:1;fill-rule:evenodd;stroke-width:0.241565;stroke-linecap:round;stroke-linejoin:bevel;paint-order:stroke fill markers;fill:#5590ff"
+       id="rect846"
+       width="135.4402"
+       height="135.46666"
+       x="0"
+       y="-3.8603201e-08"
+       ry="30.003641" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458334)"
+       id="text2412"
+       style="fill:black;fill-opacity:1;line-height:1.25;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;white-space:pre;shape-inside:url(#rect2414)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:61.9861px;line-height:1.25;font-family:HYWenHei;-inkscape-font-specification:'HYWenHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.54965"
+       x="5.7757483"
+       y="75.096581"
+       id="text4663"
+       transform="scale(0.85800755,1.1654909)"><tspan
+         sodipodi:role="line"
+         id="tspan4661"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:61.9861px;font-family:HYWenHei;-inkscape-font-specification:'HYWenHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:1.54965"
+         x="5.7757483"
+         y="75.096581">Lyre</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:61.9861px;font-family:HYWenHei;-inkscape-font-specification:'HYWenHei, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:1.54965"
+         x="5.7757483"
+         y="152.57921"
+         id="tspan4665" /></text>
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff"
+       id="path871"
+       inkscape:flatsided="false"
+       sodipodi:sides="5"
+       sodipodi:cx="405.71851"
+       sodipodi:cy="64.679764"
+       sodipodi:r1="58.499016"
+       sodipodi:r2="29.249508"
+       sodipodi:arg1="0.56012138"
+       sodipodi:arg2="1.1884399"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 455.27832,95.759649 -38.6466,-3.942542 -25.15712,29.601053 -8.19287,-37.973408 -35.92626,-14.778614 33.58313,-19.526317 2.95347,-38.734743 28.94839,25.905485 37.7516,-9.160774 -15.69204,35.536787 z"
+       transform="matrix(0.17906584,0,0,0.17906584,40.150682,10.002033)"
+       inkscape:transform-center-x="0.78817887"
+       inkscape:transform-center-y="0.22058334" />
+  </g>
+</svg>

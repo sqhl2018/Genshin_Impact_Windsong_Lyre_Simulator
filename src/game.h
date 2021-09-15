@@ -6,6 +6,7 @@
 #include<map>
 #include<iostream>
 #include<SFML/Audio.hpp>
+#include<windows.h>
 #define maxSoundNum 249 //同时播放的最大音效数
 //动画信息类，对应按下按键后的波纹效果
 class AnimationInfo{
@@ -25,8 +26,13 @@ class Game {
         Game(const Game&) = delete;
         Game& operator=(const Game&) = delete;
         Game();
+        ~Game();
         void run(int frame_per_seconds);
     private:
+    
+#ifdef SHUCCHU_ZIFU
+        int index=0;
+#endif
         MResources res;
         void processEvents();//拉取时间
         void update(sf::Time deltaTime);//更新，没用到
@@ -36,15 +42,20 @@ class Game {
         sf::Sprite* clefSprite;
         sf::Sprite* clefTensorSprite;
         sf::Sprite* clefBaseSprite;
-        double clefX=150.f;
-        sf::Vector2f* clefPosition=new sf::Vector2f(clefX,168.f);//三个音符的位置
-        sf::Vector2f* clefTensorPosition=new sf::Vector2f(clefX,310.f);
-        sf::Vector2f* clefBasePosition=new sf::Vector2f(clefX,450.f);
-        std::map<std::string,sf::Sprite*>upMap;
-        std::map<std::string,sf::Sprite*>downMap;
-        int windowWidth=1536;//窗口大小
-        int windowHeight=700;
-        int buttonSize=100;//按键的尺寸
+        int btnHGap=160;//按键横向间隔
+        int btnVGap=130;//按键纵向间隔
+        int btnStartX=158;//第一个按键的x
+        int btnStartY=130;//第一个按键的y
+        int btnSize=100;//按键的直径
+        //三个音符的位置
+        double clefStartX=60.f;
+        sf::Vector2f* clefPosition=new sf::Vector2f(clefStartX,118.f);
+        sf::Vector2f* clefTensorPosition=new sf::Vector2f(clefStartX,260.f);
+        sf::Vector2f* clefBasePosition=new sf::Vector2f(clefStartX,395.f);
+        std::map<std::string,sf::Sprite*>btnUpSpirteMap;//每个按键对应的未按下的图像
+        std::map<std::string,sf::Sprite*>btnDownSpirteMap;//每个按键对应的按下的图像
+        int windowWidth=1272;//窗口的宽
+        int windowHeight=600;//窗口的高
         //21个键值
         std::array<std::string,21>keys={"Q","W","E","R","T","Y","U","A","S","D","F","G","H","J","Z","X","C","V","B","N","M"};
         //7中音符
@@ -64,6 +75,7 @@ class Game {
         void play(std::string key);
         void onKeyPressed(std::string key);
         void onKeyReleased(std::string key);
+        // void setWindowMiniMize();
         //游戏主时钟
         sf::Clock clock;
         //环形动画效果
