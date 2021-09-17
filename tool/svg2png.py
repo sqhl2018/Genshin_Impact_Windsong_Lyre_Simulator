@@ -42,6 +42,10 @@ s_to_p("./svgs/ti_down.svg",targetDir+"ti_down.png",noteScale)
 
 s_to_p("./svgs/donghua.svg",targetDir+"donghua.png",noteScale)
 
+btnScale=0.5
+s_to_p("./svgs/close.svg",targetDir+"close.png",btnScale)
+s_to_p("./svgs/min.svg",targetDir+"min.png",btnScale)
+s_to_p("./svgs/close_hover.svg",targetDir+"close_hover.png",btnScale)
+s_to_p("./svgs/min_hover.svg",targetDir+"min_hover.png",btnScale)
 
-# s_to_p("./svgs/close.svg",targetDir+"close.png",noteScale)
-# s_to_p("./svgs/min.svg",targetDir+"min.png",noteScale)
+s_to_p("./svgs/title.svg",targetDir+"title.png",1.0)

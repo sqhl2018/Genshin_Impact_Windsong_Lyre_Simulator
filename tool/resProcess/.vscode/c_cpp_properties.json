@@ -3,15 +3,12 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceRoot}",
-                "${workspaceRoot}/SFML/include"//在这里添加第三方库的头文件目录
+                "${workspaceRoot}"//在这里添加第三方库的头文件目录
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE",
-                "DISABLE_INPUTMETHOD",
-                "ROUND_RECT_WINDOW"
+                "_UNICODE"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",

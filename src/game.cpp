@@ -3,20 +3,30 @@
 #include<stdint.h>
 #include <thread>
 //以下是防止按键变成输入法打字,接收不到按键信息
-#ifdef IMM_COMPILE
+#ifdef DISABLE_INPUTMETHOD
 #include<windows.h>
 #include<imm.h>
 #endif
-
+#ifdef ROUND_RECT_WINDOW
+#include<dwmapi.h>
+#endif
+#include<SFML/Window/Cursor.hpp>
 Game::Game() {
 /******************************加载资源文件,load resource files********************************************/
     //背景图,load background image
     sf::Texture* texture=new sf::Texture;
+#ifndef ROUND_RECT_WINDOW
     //texture->loadFromFile("./res/png/bg.png");
     if(texture->loadFromMemory(res_bg_png,res_bg_png_size)){
        bgSprite=new sf::Sprite(*texture);
        bgSprite->setTextureRect(sf::IntRect(0, 15, windowWidth,windowHeight));
     }
+#else
+    if(texture->loadFromMemory(res_bg_round_png,res_bg_round_png_size)){
+       bgSprite=new sf::Sprite(*texture);
+       bgSprite->setTextureRect(sf::IntRect(0, 0, windowWidth,windowHeight));
+    }
+#endif
     //三个音符
     texture=new sf::Texture;
     if(texture->loadFromMemory(res_clef_png,res_clef_png_size)){
@@ -33,6 +43,14 @@ Game::Game() {
         clefBaseSprite=new sf::Sprite(*texture);
         clefBaseSprite->setPosition(*clefBasePosition);
     }
+    texture=new sf::Texture;
+    if(texture->loadFromMemory(res_title_png,res_title_png_size)){
+        titleSprite=new sf::Sprite(*texture);
+        titleSprite->setPosition(sf::Vector2f(0,-15));
+    }
+    
+    
+    
     
     //一些对应关系
     for(int i=0;i<21;i++){
@@ -73,20 +91,33 @@ Game::Game() {
         donghua=new sf::Sprite(*texture);
     }
     //创建主窗口,create the main window
-    window=new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight),"Genshin Impact.WindSong Lyre",sf::Style::Close);
+    window=new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight),"Genshin Impact.WindSong Lyre",sf::Style::None);
     window->setKeyRepeatEnabled(false);//禁止重复按键
     //防止卡输入法
-    #ifdef IMM_COMPILE
+#ifdef DISABLE_INPUTMETHOD
     sf::WindowHandle handle=window->getSystemHandle();
     HIMC g_hIMC = NULL;//g_hIMC 用于恢复时使用
-    g_hIMC = ImmAssociateContext(handle, NULL);//handle 为要禁用的窗口句柄
-    #endif
-    //加载图标.load the icon.
+    g_hIMC = ImmAssociateContext(handle, NULL);//handle 为要禁用的窗口句柄'
+#endif
+#ifdef ROUND_RECT_WINDOW
+    DWM_BLURBEHIND bb;
+    bb.dwFlags=DWM_BB_ENABLE|DWM_BB_BLURREGION;
+    bb.fEnable=TRUE;
+    bb.hRgnBlur=CreateRectRgn(0,0,-1,-1);
+    DwmEnableBlurBehindWindow(handle,&bb);
+#endif
     auto image = sf::Image{};
-    if (image.loadFromMemory(res_icon_png,res_icon_png_size)){
+    if (image.loadFromMemory(res_keli_png,res_keli_png_size)){
         window->setIcon(50, 50, image.getPixelsPtr());
+    }  
+    sf::Cursor *cursor=new sf::Cursor;
+    sf::Image* image1=new sf::Image;
+    if(image1->loadFromMemory(res_cursor_png,res_cursor_png_size)&&cursor->loadFromPixels(image1->getPixelsPtr(),image1->getSize(),sf::Vector2u(0,0))) {
+        window->setMouseCursor(*cursor);
     }
-    
+    int baseX=1080;
+    closeBtn=new Button(Button::TYPE_CLOSE,window,baseX+100,20);
+    minBtn=new Button(Button::TYPE_MIN,window,baseX+30,20);
 }
 void Game::run(int frame_per_seconds) {
     sf::Clock clock;
@@ -95,7 +126,7 @@ void Game::run(int frame_per_seconds) {
     //程序主循环{processEvents();判断是否需要重新绘制;render()?;}
     while (window->isOpen()) {
         //降低运行速度，不然cpu占用高
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         //拉取并处理事件
         processEvents();
         //计算是否需要重新绘制
@@ -155,6 +186,9 @@ void Game::onKeyReleased(std::string key){
 void Game::processEvents() {
     sf::Event event;
     while (window->pollEvent(event)) {
+        if(closeBtn->onEvent(&event)||minBtn->onEvent(&event)){
+            return;
+        }
         if (event.type == sf::Event::Closed ) {
             window->close();
         }else if(event.type==sf::Event::KeyPressed){
@@ -209,19 +243,33 @@ void Game::processEvents() {
         }else if(event.type==sf::Event::MouseButtonPressed){
             int x=event.mouseButton.x;
             int y=event.mouseButton.y;
-            for(int i=0;i<21;i++){
-                if((x-(positionMap[keys.at(i)].x+btnSize/2))*(x-(positionMap[keys.at(i)].x+btnSize/2))+(y-(positionMap[keys.at(i)].y+btnSize/2))*(y-(positionMap[keys.at(i)].y+btnSize/2))<(btnSize/2)*(btnSize/2)){
-                    onKeyPressed(keys.at(i));
-                    break;
-                }
-            }  
-        }else if(event.type==sf::Event::MouseButtonReleased){
+            if(y<moveY){
+                globalPosition = sf::Mouse::getPosition();
+                windowpos=window->getPosition();
+                pressed=true;  
+            }else{
                 for(int i=0;i<21;i++){
-                    onKeyReleased(keys.at(i));
-                }
+                    if((x-(positionMap[keys.at(i)].x+btnSize/2))*(x-(positionMap[keys.at(i)].x+btnSize/2))+(y-(positionMap[keys.at(i)].y+btnSize/2))*(y-(positionMap[keys.at(i)].y+btnSize/2))<(btnSize/2)*(btnSize/2)){
+                        onKeyPressed(keys.at(i));
+                        break;
+                    }
+                } 
+            }
+             
+        }else if(event.type==sf::Event::MouseButtonReleased){
+            pressed=false;
+            for(int i=0;i<21;i++){
+                onKeyReleased(keys.at(i));
+            }
+        }else if(pressed&&event.type==sf::Event::MouseMoved){            
+            sf::Vector2i cp = sf::Mouse::getPosition();
+            window->setPosition(cp-globalPosition+windowpos);
+            //std::cout<<(cp-globalPosition).x<<std::endl;
         }
+
     }
 }
+
 void Game::update(sf::Time deltaTime){
 }
 
@@ -252,11 +300,16 @@ void Game::render() {
         count=0;
     }
     #endif
-    window->clear(sf::Color::White);
+    window->clear(sf::Color::Transparent);
     window->draw(*bgSprite);
     window->draw(*clefSprite);
     window->draw(*clefTensorSprite);
     window->draw(*clefBaseSprite);
+    closeBtn->draw();
+    minBtn->draw();
+    window->draw(*titleSprite);
+    // window->draw(*closeBtnSprite);
+    // window->draw(*minBtnSprite);
     sf::Int32 msec = clock.getElapsedTime().asMilliseconds();
     //把21个按键画出来
     for(int i=0;i<21;i++){
@@ -298,4 +351,66 @@ void AnimationInfo::restart(sf::Int32 time){
     startTime=time;
     currentFrame=0;
     isOver=false;
+}
+
+Button::Button(int typeId,sf::RenderWindow* parentWindow,int x,int y):parentWindow(parentWindow),cx(x+25),cy(y+25),type(typeId){
+    sf::Texture* texture=new sf::Texture;
+      
+    if(typeId==TYPE_CLOSE){
+        if(texture->loadFromMemory(res_close_png,res_close_png_size)){
+            released=new sf::Sprite(*texture);
+            released->setPosition(sf::Vector2f(x,y));
+        }
+        texture=new sf::Texture;
+        if(texture->loadFromMemory(res_close_hover_png,res_close_hover_png_size)){
+            hover=new sf::Sprite(*texture);
+            hover->setPosition(sf::Vector2f(x,y));
+        }
+    }else{
+        if(texture->loadFromMemory(res_min_png,res_min_png_size)){
+            released=new sf::Sprite(*texture);
+            released->setPosition(sf::Vector2f(x,y));
+        }
+        texture=new sf::Texture;
+        if(texture->loadFromMemory(res_min_hover_png,res_min_hover_png_size)){
+            hover=new sf::Sprite(*texture);
+            hover->setPosition(sf::Vector2f(x,y));
+        }
+    }
+    spriteToDraw=released;
+}
+bool Button::onEvent(sf::Event *event){
+    if(event->type==sf::Event::MouseButtonPressed){
+        int dx=event->mouseButton.x-cx;
+        int dy=event->mouseButton.y-cy;
+        if(dx*dx+dy*dy<625){
+            onAction();
+            return true;
+        }
+    }else if(event->type==sf::Event::MouseMoved){
+        int dx=sf::Mouse::getPosition(*parentWindow).x-cx;
+        int dy=sf::Mouse::getPosition(*parentWindow).y-cy;
+        if(dx*dx+dy*dy<625){
+            //std::cout<<dx<<","<<dy<<std::endl;
+            spriteToDraw=hover;
+            return true;
+        }else{
+            //std::cout<<"hh"<<std::endl;
+            spriteToDraw=released;
+        }
+    }
+    return false;
+}
+void Button::draw(){
+    if(spriteToDraw){
+        parentWindow->draw(*spriteToDraw);
+    } 
+}
+void Button::onAction(){
+    if(type==TYPE_CLOSE){
+        parentWindow->close();
+    }else{
+        sf::WindowHandle handle=parentWindow->getSystemHandle();
+        ShowWindow(handle,SW_SHOWMINIMIZED);
+    }
 }

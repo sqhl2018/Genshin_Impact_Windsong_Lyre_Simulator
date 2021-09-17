@@ -1,0 +1,24 @@
+{
+    "tasks": [
+        {
+            //一般都是用g++来编译程序，配置起来很麻烦乱七八糟的，我直接用make加makefile来生成
+            "type": "cppbuild",//默认配置，实质为在win的端口使用shell命令
+            "label": "make 生成可执行文件",//任务的名称，可以修改，但一定要和launch中的"preLaunchTask"项保持一致
+            "command": "make",
+            "args": [
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "使用make生成可执行文件"//一些描述性信息
+        }
+    ],
+    "version": "2.0.0"
+}

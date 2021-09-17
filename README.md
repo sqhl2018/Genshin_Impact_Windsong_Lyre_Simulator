@@ -8,6 +8,16 @@ Forgive me for my poor english.
 
 The source code can be seen on both Gitee and Github. The two repositories are not synchronized and will lag.
 
+#### 一些资源文件的原作者(The original author of some resource files)
+
+**以下资源如另作他用,请自行获取授权**
+
+**If the following resources are used for other purposes, please obtain authorization by yourself**
+
+程序图标(icon):鱼翅翅Kira@bilibili(uid2292091)
+
+鼠标指针(cursor):Naruse_Kazuha@bilibili(uid285832138)
+
 #### 下载(Download)
 
 见Release.Download is available,see release.
@@ -30,6 +40,8 @@ The source code can be seen on both Gitee and Github. The two repositories are n
 输入:资源文件res/xxx.xxx
 输出:src/res.cpp、src/res.h、tmp/res_arr.cpp
 结果，我可以通过这三个文件在内存中访问资源文件(原理的话你去看一下这三个输出就明白了)。
+
+这个小工具的源码我放在/tool/resProcessor里了
 
 It is a tool built by myself.Function:
 Input:resource files:res/xxx.xxx

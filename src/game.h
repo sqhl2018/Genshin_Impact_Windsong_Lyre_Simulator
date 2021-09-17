@@ -21,6 +21,25 @@ class AnimationInfo{
         int x;//动画绘制时的位置x
         int y;//动画绘制时的位置y
 };
+class Button{
+    public:
+        Button(int typeId,sf::RenderWindow* parentWindow,int x,int y);
+        static const int TYPE_CLOSE=0x00;
+        static const int TYPE_MIN=0x11;
+        ~Button();
+        bool onEvent(sf::Event *event);
+        void draw();
+    private:
+        int cx;
+        int cy;
+        int type;
+        sf::Sprite* spriteToDraw;
+        sf::Sprite* hover;
+        sf::Sprite* pressed;
+        sf::Sprite* released;
+        sf::RenderWindow*parentWindow;
+        void onAction();
+};
 class Game {
     public:
         Game(const Game&) = delete;
@@ -45,13 +64,14 @@ class Game {
         int btnHGap=160;//按键横向间隔
         int btnVGap=130;//按键纵向间隔
         int btnStartX=158;//第一个按键的x
-        int btnStartY=130;//第一个按键的y
+        int btnStartY=160;//第一个按键的y
         int btnSize=100;//按键的直径
         //三个音符的位置
         double clefStartX=60.f;
-        sf::Vector2f* clefPosition=new sf::Vector2f(clefStartX,118.f);
-        sf::Vector2f* clefTensorPosition=new sf::Vector2f(clefStartX,260.f);
-        sf::Vector2f* clefBasePosition=new sf::Vector2f(clefStartX,395.f);
+        double clefStartY=140.f;
+        sf::Vector2f* clefPosition=new sf::Vector2f(clefStartX, clefStartY+8);
+        sf::Vector2f* clefTensorPosition=new sf::Vector2f(clefStartX, clefStartY+150);
+        sf::Vector2f* clefBasePosition=new sf::Vector2f(clefStartX, clefStartY+285);
         std::map<std::string,sf::Sprite*>btnUpSpirteMap;//每个按键对应的未按下的图像
         std::map<std::string,sf::Sprite*>btnDownSpirteMap;//每个按键对应的按下的图像
         int windowWidth=1272;//窗口的宽
@@ -83,11 +103,19 @@ class Game {
         int frameTime=60;//动画每一帧的时间
         //键值与对应的动画信息的映射
         std::map<std::string,AnimationInfo*>animationMap;
+        bool pressed=false;
+        sf::Vector2i globalPosition = sf::Mouse::getPosition();
+        sf::Vector2i windowpos=sf::Vector2i();
+        int moveY=159;
+        Button* closeBtn;
+        Button* minBtn;
+        sf::Sprite* titleSprite;
         //如果要计算帧率
         #ifdef SHUCHU_ZHENLV
         int count=0;
         sf::Int32 gTime=clock.getElapsedTime().asMilliseconds();
         #endif
 };
+
 
 #endif // GAME_H
